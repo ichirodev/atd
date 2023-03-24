@@ -1,9 +1,14 @@
 import re
 
 def remove_invalid_chars(str):
-    invalid_chars = "|?_-*"
+    invalid_chars = "|?_-*/\\'"
     for char in invalid_chars:
         str = str.replace(char, "")
+    return str
+
+def remove_quotes(str):
+    str = str.replace("\'", "")
+    str = str.replace("\"", "")
     return str
 
 def remove_accent_marks(str):
@@ -18,17 +23,14 @@ def clean_string(str):
     str = remove_accent_marks(str)
     return str
 
-def find_route(list):
-    valid_routes = ['ORAL', 'SUBLINGUAL', 'INYECTABLE', 'RECTAL', 'VAGINAL', 'OCULAR', 
-                    'INTRAVENOSA', 'INTRAMUSCULAR', 'INTRALESIONAL', 'INTRAARTICULAR',
-                    'OTICA', 'NASAL', 'INHALATORIA', 'CUTANEA']
+def find_first(list, dictionary):
     for text_line in list:
-        if text_line in valid_routes:
+        if text_line in dictionary:
             list.remove(text_line)
             return text_line, list
         else:
-            for route in valid_routes:
-                if route in text_line:
+            for word in dictionary:
+                if word in text_line:
                     list.remove(text_line)
                     return text_line, list
     return "", list
@@ -41,3 +43,19 @@ def find_concentration(list):
             list.remove(text_line)
             return text_line, list
     return "", list
+
+def filter_text(list, dictionary):
+    for text_line in list:
+        if text_line in dictionary:
+            list.remove(text_line)
+    
+    for word in dictionary:
+        for text_line in list:
+            if word in text_line:
+                list.remove(text_line)
+
+    for text_line in list:
+        if len(text_line) <= 3:
+            list.remove(text_line)
+    
+    return list
