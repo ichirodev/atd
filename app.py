@@ -3,15 +3,15 @@ import easyocr
 import matplotlib.pyplot as plt
 import numpy as np
 import os
-from flask import Flask, request
+from flask import Flask, request, jsonify
 from werkzeug.utils import secure_filename
+from util.text import clean_string, find_route, find_concentration
+from medicament import MedicamentPackage
 
-# instance text detector
-reader = easyocr.Reader(['es'], gpu=False)
+reader = easyocr.Reader(['es'], gpu=True)
 UPLOAD_FOLDER = os.getcwd() + "\\img\\uploads"
 ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg'}
 
-# init flask
 app = Flask(__name__)
 app.config["UPLOAD_FOLDER"] = UPLOAD_FOLDER
 
@@ -27,19 +27,24 @@ def analyze():
         return 'No image uploaded', 400
     
     if image and allowed_file(image.filename):
-            list = []
             filename = secure_filename(image.filename)
             image_path = os.path.join(app.config['UPLOAD_FOLDER'], filename)
             image.save(image_path)
 
             img = cv2.imread(image_path)
+            detected_text = reader.readtext(img)
 
-            # detect text on image
-            text_ = reader.readtext(img)
+            text_list = []
+            for text_line in detected_text:
+                text = clean_string(text_line[1]).upper()
+                if text != "":
+                    text_list.append(text)
+            
+            concentration, text_list = find_concentration(text_list)
+            route, text_list = find_route(text_list)
+            medicament = "Diclofenaco" # get data from scrapper, then search this name into the db
+            purpose = "Inflamacion" # get purpose of medicament
 
-            # draw bbox and text
-            for t in text_:
-                list.append(t[1])
-            # bbox, text, score = t
-            print(list)
-            return list
+            medicament = MedicamentPackage("Diclofenaco", concentration, route, "Inflamacion")
+        
+            return medicament.json()
