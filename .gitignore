@@ -129,6 +129,6 @@ dmypy.json
 .pyre/
 
 # Local stored images
-.jpg
-.png
-.jpeg
+*.jpg
+*.png
+*.jpeg
