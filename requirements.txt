@@ -4,3 +4,4 @@ opencv-python-headless==4.5.4.60
 numpy==1.24.2
 flask
 mysql-connector-python 
+flask-cors

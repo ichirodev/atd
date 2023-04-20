@@ -10,6 +10,7 @@ from werkzeug.utils import secure_filename
 from util.text import clean_string, find_first, find_concentration, filter_text
 from medicament import MedicamentPackage
 from util.dictionary import load_dictionary
+from flask_cors import CORS
 
 CURRENT_PATH = os.getcwd()
 UPLOAD_FOLDER = CURRENT_PATH + "\\img\\uploads"
@@ -25,12 +26,14 @@ db_connection = mysql.connector.connect(
         user = "root",
         password = "passw0rd",
         database = "drugdb",
-        port = "33060"
+        port = "3306"
     )
 db_cursor = db_connection.cursor()
 
 app = Flask(__name__)
+CORS(app)
 app.config["UPLOAD_FOLDER"] = UPLOAD_FOLDER
+
 
 def allowed_file(filename):
     return '.' in filename and \
@@ -67,9 +70,14 @@ def get_data_from_list(cursor, list):
              return drug_name, drug_purpose
     return drug_name, drug_purpose
      
+@app.route('/')
+def heartbeat():
+    return '{"status": "okay"}'
+
 @app.route("/api/analyze", methods=['POST'])
 def analyze():
-    image = request.files['file']
+    print("Image detected")
+    image = request.files['image']
 
     if not image:
         return 'No image uploaded', 400
