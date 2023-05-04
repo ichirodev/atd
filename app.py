@@ -22,7 +22,7 @@ bloat_dictionary = load_dictionary(CURRENT_PATH + "\\bloat_dictionary.txt")
 route_dictionary = load_dictionary(CURRENT_PATH + "\\route_dictionary.txt")
 
 db_connection = mysql.connector.connect(
-        host = "localhost",
+        host = "100.81.187.129",
         user = "root",
         password = "passw0rd",
         database = "drugdb",
