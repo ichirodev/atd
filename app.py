@@ -23,7 +23,7 @@ route_dictionary = load_dictionary(CURRENT_PATH + "\\route_dictionary.txt")
 
 db_connection = mysql.connector.connect(
         host = "100.81.187.129",
-        user = "root",
+        user = "mm",
         password = "passw0rd",
         database = "drugdb",
         port = "3306"
